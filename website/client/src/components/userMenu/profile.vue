@@ -62,6 +62,14 @@
           >
             {{ $t('achievements') }}
           </div>
+          <div
+            v-if="isUserProfile"
+            class="nav-item"
+            :class="{active: selectedPage === 'history'}"
+            @click="selectPage('history')"
+          >
+            {{ $t('actionHistory') }}
+          </div>
         </div>
       </div>
       <!-- SHOW PROFILE -->
@@ -547,6 +555,13 @@
           :show-allocation="showAllocation()"
         />
       </div>
+      <!-- ACTION HISTORY -->
+      <div v-if="isUserProfile">
+        <profileActionHistory
+          v-show="selectedPage === 'history'"
+          :user-id="user._id"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -984,6 +999,7 @@ import { mapState } from '@/libs/store';
 import MemberDetails from '../memberDetails';
 import markdown from '@/directives/markdown';
 import profileStats from './profileStats';
+import profileActionHistory from './profileActionHistory';
 
 import message from '@/assets/svg/message.svg?raw';
 import gift from '@/assets/svg/gift.svg?raw';
@@ -1011,6 +1027,7 @@ export default {
   components: {
     MemberDetails,
     profileStats,
+    profileActionHistory,
     toggleSwitch,
   },
   mixins: [externalLinks, userCustomStateMixin('userLoggedIn')],
@@ -1110,6 +1127,10 @@ export default {
       return Boolean(this.hasPermission(this.userLoggedIn, 'moderator')
         || !this.user.profile.flags[this.userLoggedIn._id]);
     },
+    isUserProfile () {
+      // Only show action history for the logged-in user's own profile
+      return this.user && this.userLoggedIn && this.user._id === this.userLoggedIn._id;
+    },
   },
   watch: {
     startingPage () {
@@ -1128,7 +1149,7 @@ export default {
     this.handleExternalLinks();
     // Check if there's a hash in the URL to determine the starting page
     let pageToSelect = this.startingPage;
-    if (window.location.hash && (window.location.hash === '#stats' || window.location.hash === '#achievements')) {
+    if (window.location.hash && (window.location.hash === '#stats' || window.location.hash === '#achievements' || window.location.hash === '#history')) {
       pageToSelect = window.location.hash.substring(1);
     }
     this.selectPage(pageToSelect);
