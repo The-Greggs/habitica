@@ -1,0 +1,38 @@
+services:
+  server:
+    image: ghcr.io/YOUR_ORG/habitica-server:YOUR_TAG
+    container_name: habitica-test-server
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    environment:
+      - NODE_DB_URI=mongodb://mongo/habitica
+      - BASE_URL=https://habitica-test.example.com
+      - INVITE_ONLY=false
+    ports:
+      - "3300:3000"
+    networks:
+      - habitica-test
+
+  mongo:
+    image: mongo:7.0
+    container_name: habitica-test-mongo
+    restart: unless-stopped
+    hostname: mongo
+    command: ["--replSet", "rs", "--bind_ip_all", "--port", "27017"]
+    healthcheck:
+      test: echo "try { rs.status() } catch (err) { rs.initiate() }" | mongosh --port 27017 --quiet
+      interval: 10s
+      timeout: 30s
+      start_period: 0s
+      start_interval: 1s
+      retries: 30
+    volumes:
+      - /srv/habitica-test/mongodb-data/db:/data/db
+      - /srv/habitica-test/mongodb-data/dbconf:/data/configdb
+    networks:
+      - habitica-test
+
+networks:
+  habitica-test:
+    driver: bridge
