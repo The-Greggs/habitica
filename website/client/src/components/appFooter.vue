@@ -6,8 +6,8 @@
       <!--
       <div class="columns d-flex w-100 justify-content-between">
         -->
-        <!-- Product -->
-        <!--
+      <!-- Product -->
+      <!--
         <div class="product">
           <h3>{{ $t('footerProduct') }}</h3>
           <ul>
@@ -38,8 +38,8 @@
           </ul>
         </div>
         -->
-        <!-- Company -->
-        <!--
+      <!-- Company -->
+      <!--
         <div class="company">
           <h3>{{ $t('footerCompany') }}</h3>
           <ul>
@@ -70,8 +70,8 @@
           </ul>
         </div>
         -->
-        <!-- Community -->
-        <!--
+      <!-- Community -->
+      <!--
         <div class="community">
           <h3>{{ $t('footerCommunity') }}</h3>
           <ul>
@@ -104,8 +104,8 @@
           </ul>
         </div>
         -->
-        <!-- Support -->
-        <!--
+      <!-- Support -->
+      <!--
         <div class="support">
           <h3>{{ $t ('support') }}</h3>
           <ul>
@@ -145,8 +145,8 @@
           </ul>
         </div>
         -->
-        <!-- Developers -->
-        <!--
+      <!-- Developers -->
+      <!--
         <div class="developers">
           <h3>{{ $t('footerDevs') }}</h3>
           <ul>
@@ -174,8 +174,8 @@
           </ul>
         </div>
         -->
-        <!-- Social - Desktop/Tablet -->
-        <!--
+      <!-- Social - Desktop/Tablet -->
+      <!--
         <div class="social">
           <div>
             <h3>{{ $t('footerSocial') }}</h3>

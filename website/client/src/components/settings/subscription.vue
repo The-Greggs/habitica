@@ -223,168 +223,168 @@
             </div>
           </div
           -->
-          <div
-            v-if="hasGiftSubscription"
-            class="d-flex flex-column align-items-center mt-4"
-          >
             <div
-              class="round-container bg-green-10
+              v-if="hasGiftSubscription"
+              class="d-flex flex-column align-items-center mt-4"
+            >
+              <div
+                class="round-container bg-green-10
               d-flex align-items-center justify-content-center"
-            >
-              <div
-                v-once
-                class="svg-icon svg-check"
-                v-html="icons.checkmarkIcon"
-              ></div>
-            </div>
-            <h2 class="green-10 mx-auto mb-3">
-              {{ $t('youAreSubscribed') }}
-            </h2>
-            <div
-              class="mx-4 text-center mb-4 lh-71"
-            >
-              <span v-once>
-                {{ $t('haveNonRecurringSub') }}
-              </span>
-              <span
-                v-once
-                v-html="$t('subscriptionInactiveDate', {date: subscriptionEndDate})"
               >
-              </span>
-            </div>
-            <h2 v-once>
-              {{ $t('switchToRecurring') }}
-            </h2>
-            <small
-              v-once
-              class="mx-4 mb-3 text-center"
-            >
-              {{ $t('continueGiftSubBenefits') }}
-            </small>
-            <subscription-options
-              :note="'subscriptionCreditConversion'"
-              class="w-100 mb-2"
-            />
-          </div>
-          <div
-            v-else-if="hasCanceledSubscription"
-            class="d-flex flex-column align-items-center"
-          >
-            <div
-              class="round-container bg-gray-100
-              d-flex align-items-center justify-content-center"
-            >
-              <div
-                v-once
-                class="svg svg-icon svg-close color white"
-                v-html="icons.closeIcon"
-              ></div>
-            </div>
-            <h2 class="gray-50">
-              {{ $t('subscriptionCanceled') }}
-            </h2>
-            <div
-              class="text-center mb-4"
-              v-html="$t('subscriptionInactiveDate', {date: subscriptionEndDate})"
-            >
-            </div>
-            <h2>{{ $t('readyToResubscribe') }}</h2>
-            <subscription-options
-              class="w-100 mb-4"
-              :canceled="true"
-            />
-          </div>
-          <div
-            v-if="hasSubscription"
-          >
-            <div class="d-flex justify-content-around mb-3">
-              <div
-                class="bg-gray-700 d-flex flex-column
-                justify-content-center align-items-center stats-card"
-              >
-                <div class="d-flex justify-content-center align-items-center">
-                  <div
-                    v-once
-                    class="svg-icon svg-calendar mr-2"
-                    v-html="icons.calendarIcon"
-                  >
-                  </div>
-                  <div class="number-heavy">
-                    {{ user.purchased.plan.consecutive.count }}
-                  </div>
-                </div>
-                <div class="stats-label gray-50">
-                  {{ $t('subMonths') }}
-                </div>
-              </div>
-              <div
-                class="bg-gray-700 d-flex flex-column
-                justify-content-center align-items-center stats-card"
-              >
-                <div class="d-flex justify-content-center align-items-center">
-                  <div
-                    v-once
-                    class="svg-icon svg-gem mr-2"
-                    v-html="icons.gemIcon"
-                  >
-                  </div>
-                  <div class="number-heavy">
-                    {{ gemCap }}
-                  </div>
-                </div>
-                <div class="stats-label gray-50">
-                  {{ $t('monthlyGemsLabel') }}
-                </div>
-              </div>
-            </div>
-            <div
-              class="hourglass-preview purple-gradient d-flex flex-column
-              justify-content-center align-items-center position-relative mb-4"
-            >
-              <div
-                v-once
-                class="svg svg-icon position-absolute left-24"
-                v-html="icons.hourglassLeft"
-              >
-              </div>
-              <div
-                v-if="nextHourGlass"
-                class="text-center"
-              >
-                <div
-                  class="white mb-1"
-                >
-                  {{ nextHourGlass }}
-                </div>
                 <div
                   v-once
-                  class="purple-600"
-                >
-                  {{ $t('nextHourglass') }}
-                </div>
+                  class="svg-icon svg-check"
+                  v-html="icons.checkmarkIcon"
+                ></div>
               </div>
-              <p
-                v-else
-                class="w-50 text-center"
-              >
-                {{ $t('subscribeAgainContinueHourglasses') }}
-              </p>
+              <h2 class="green-10 mx-auto mb-3">
+                {{ $t('youAreSubscribed') }}
+              </h2>
               <div
-                v-once
-                class="svg svg-icon position-absolute right-24"
-                v-html="icons.hourglassRight"
+                class="mx-4 text-center mb-4 lh-71"
               >
+                <span v-once>
+                  {{ $t('haveNonRecurringSub') }}
+                </span>
+                <span
+                  v-once
+                  v-html="$t('subscriptionInactiveDate', {date: subscriptionEndDate})"
+                >
+                </span>
               </div>
+              <h2 v-once>
+                {{ $t('switchToRecurring') }}
+              </h2>
+              <small
+                v-once
+                class="mx-4 mb-3 text-center"
+              >
+                {{ $t('continueGiftSubBenefits') }}
+              </small>
+              <subscription-options
+                :note="'subscriptionCreditConversion'"
+                class="w-100 mb-2"
+              />
             </div>
             <div
-              v-once
-              class="text-center next-hourglass-description gray-50"
+              v-else-if="hasCanceledSubscription"
+              class="d-flex flex-column align-items-center"
             >
-              {{ $t('nextHourglassDescription') }}
+              <div
+                class="round-container bg-gray-100
+              d-flex align-items-center justify-content-center"
+              >
+                <div
+                  v-once
+                  class="svg svg-icon svg-close color white"
+                  v-html="icons.closeIcon"
+                ></div>
+              </div>
+              <h2 class="gray-50">
+                {{ $t('subscriptionCanceled') }}
+              </h2>
+              <div
+                class="text-center mb-4"
+                v-html="$t('subscriptionInactiveDate', {date: subscriptionEndDate})"
+              >
+              </div>
+              <h2>{{ $t('readyToResubscribe') }}</h2>
+              <subscription-options
+                class="w-100 mb-4"
+                :canceled="true"
+              />
+            </div>
+            <div
+              v-if="hasSubscription"
+            >
+              <div class="d-flex justify-content-around mb-3">
+                <div
+                  class="bg-gray-700 d-flex flex-column
+                justify-content-center align-items-center stats-card"
+                >
+                  <div class="d-flex justify-content-center align-items-center">
+                    <div
+                      v-once
+                      class="svg-icon svg-calendar mr-2"
+                      v-html="icons.calendarIcon"
+                    >
+                    </div>
+                    <div class="number-heavy">
+                      {{ user.purchased.plan.consecutive.count }}
+                    </div>
+                  </div>
+                  <div class="stats-label gray-50">
+                    {{ $t('subMonths') }}
+                  </div>
+                </div>
+                <div
+                  class="bg-gray-700 d-flex flex-column
+                justify-content-center align-items-center stats-card"
+                >
+                  <div class="d-flex justify-content-center align-items-center">
+                    <div
+                      v-once
+                      class="svg-icon svg-gem mr-2"
+                      v-html="icons.gemIcon"
+                    >
+                    </div>
+                    <div class="number-heavy">
+                      {{ gemCap }}
+                    </div>
+                  </div>
+                  <div class="stats-label gray-50">
+                    {{ $t('monthlyGemsLabel') }}
+                  </div>
+                </div>
+              </div>
+              <div
+                class="hourglass-preview purple-gradient d-flex flex-column
+              justify-content-center align-items-center position-relative mb-4"
+              >
+                <div
+                  v-once
+                  class="svg svg-icon position-absolute left-24"
+                  v-html="icons.hourglassLeft"
+                >
+                </div>
+                <div
+                  v-if="nextHourGlass"
+                  class="text-center"
+                >
+                  <div
+                    class="white mb-1"
+                  >
+                    {{ nextHourGlass }}
+                  </div>
+                  <div
+                    v-once
+                    class="purple-600"
+                  >
+                    {{ $t('nextHourglass') }}
+                  </div>
+                </div>
+                <p
+                  v-else
+                  class="w-50 text-center"
+                >
+                  {{ $t('subscribeAgainContinueHourglasses') }}
+                </p>
+                <div
+                  v-once
+                  class="svg svg-icon position-absolute right-24"
+                  v-html="icons.hourglassRight"
+                >
+                </div>
+              </div>
+              <div
+                v-once
+                class="text-center next-hourglass-description gray-50"
+              >
+                {{ $t('nextHourglassDescription') }}
+              </div>
             </div>
           </div>
         </div>
-      </div>
       <!--
       <div
         v-if="hasSubscription && !hasCanceledSubscription"
@@ -407,7 +407,7 @@
         </div>
       </div>
       -->
-    </div>
+      </div>
     <!--
     <div class="d-flex flex-column justify-content-center">
       <div class="d-flex justify-content-center">
@@ -445,6 +445,7 @@
       </div>
     </div>
     -->
+    </div>
   </div>
 </template>
 

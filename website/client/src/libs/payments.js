@@ -1,2 +1,2 @@
-export function setup() { // eslint-disable-line import/prefer-default-export
+export function setup () { // eslint-disable-line import/prefer-default-export
 }

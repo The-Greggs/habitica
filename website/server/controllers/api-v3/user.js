@@ -1822,7 +1822,8 @@ api.statSync = {
  * todos checked, rewards purchased) performed by the authenticated user.
  *
  * @apiParam (Query) {Number} [days=1] Number of days of history to retrieve (default: 1)
- * @apiParam (Query) {Number} [limit=100] Maximum number of actions to return (default: 100, max: 1000)
+ * @apiParam (Query) {Number} [limit=100] Maximum number of actions to return
+ *                                         (default: 100, max: 1000)
  * @apiParam (Query) {Number} [skip=0] Number of actions to skip (for pagination)
  *
  * @apiSuccess {Object} data The action history
@@ -1853,22 +1854,22 @@ api.getUserActionHistory = {
   url: '/user/action-history',
   async handler (req, res) {
     const { user } = res.locals;
-    
+
     // Parse query parameters
     const days = Math.min(Math.max(parseInt(req.query.days, 10) || 1, 1), 365);
     const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 100, 1), 1000);
     const skip = Math.max(parseInt(req.query.skip, 10) || 0, 0);
-    
+
     // Calculate start date
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - days);
-    
+
     // Query task actions
     const query = {
       userId: user._id,
       timestamp: { $gte: startDate },
     };
-    
+
     const [actions, total] = await Promise.all([
       TaskAction.find(query)
         .sort({ timestamp: -1 })
@@ -1879,7 +1880,7 @@ api.getUserActionHistory = {
         .exec(),
       TaskAction.countDocuments(query).exec(),
     ]);
-    
+
     res.respond(200, {
       actions,
       total,
