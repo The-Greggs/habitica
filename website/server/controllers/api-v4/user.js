@@ -3,6 +3,7 @@ import * as userLib from '../../libs/user';
 import { verifyDisplayName } from '../../libs/user/validation';
 import common from '../../../common';
 import { TransactionModel as Transaction } from '../../models/transaction';
+import { model as TaskActionHistory } from '../../models/taskActionHistory';
 import { BadRequest, NotAuthorized } from '../../libs/errors';
 import * as passwordUtils from '../../libs/password';
 
@@ -315,6 +316,54 @@ api.purchaseHistory = {
     const { user } = res.locals;
     const transactions = await Transaction.find({ userId: user._id }).sort({ createdAt: -1 });
     res.respond(200, transactions);
+  },
+};
+
+api.taskHistory = {
+  method: 'GET',
+  middlewares: [authWithHeaders()],
+  url: '/user/task-history',
+  async handler (req, res) {
+    const { user } = res.locals;
+
+    const requestedDays = Number(req.query.days || 1);
+    const days = Number.isFinite(requestedDays) && requestedDays > 0
+      ? Math.min(Math.floor(requestedDays), 3650)
+      : 1;
+
+    const requestedLimit = Number(req.query.limit || 200);
+    const limit = Number.isFinite(requestedLimit) && requestedLimit > 0
+      ? Math.min(Math.floor(requestedLimit), 1000)
+      : 200;
+
+    const query = {
+      userId: user._id,
+      timestamp: {
+        $gte: new Date(Date.now() - (days * 24 * 60 * 60 * 1000)),
+      },
+    };
+
+    const { taskType } = req.query;
+    if (taskType) {
+      if (!['habit', 'daily', 'todo', 'reward'].includes(taskType)) {
+        throw new BadRequest(res.t('invalidTaskType'));
+      }
+      query.taskType = taskType;
+    }
+
+    const entries = await TaskActionHistory
+      .find(query)
+      .sort({ timestamp: -1 })
+      .limit(limit)
+      .lean()
+      .exec();
+
+    res.respond(200, {
+      entries,
+      hasMore: entries.length >= limit,
+      days,
+      limit,
+    });
   },
 };
 

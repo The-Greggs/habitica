@@ -14,6 +14,7 @@ import {
 import { model as Challenge } from '../../models/challenge';
 import { model as Group } from '../../models/group';
 import { model as User } from '../../models/user';
+import { model as TaskActionHistory } from '../../models/taskActionHistory';
 import * as Tasks from '../../models/task';
 import { apiError } from '../apiError';
 import {
@@ -406,6 +407,13 @@ async function handleTeamTask (task, delta, direction) {
  * @return Response Data
 */
 async function scoreTask (user, task, direction, req, res) {
+  const actorStatsBefore = {
+    exp: user.stats.exp,
+    gp: user.stats.gp,
+    hp: user.stats.hp,
+    mp: user.stats.mp,
+  };
+
   if (task.type === 'daily' || task.type === 'todo') {
     if (task.group.id && task.group.assignedUsersDetail
       && task.group.assignedUsersDetail[user._id]
@@ -534,6 +542,13 @@ async function scoreTask (user, task, direction, req, res) {
     direction,
     pullTask,
     pushTask,
+    expDelta: user.stats.exp - actorStatsBefore.exp,
+    gpDelta: user.stats.gp - actorStatsBefore.gp,
+    hpDelta: user.stats.hp - actorStatsBefore.hp,
+    mpDelta: user.stats.mp - actorStatsBefore.mp,
+    questProgressDelta: user._tmp && user._tmp.quest ? user._tmp.quest.progressDelta : undefined,
+    questCollectionDelta: user._tmp && user._tmp.quest ? user._tmp.quest.collection : undefined,
+    questKey: user.party && user.party.quest ? user.party.quest.key : undefined,
     // clone user._tmp so that it's not overwritten by other score operations
     // when using the bulk scoring API
     _tmp: cloneDeep(user._tmp),
@@ -616,6 +631,34 @@ export async function scoreTasks (user, taskScorings, req, res) {
   }
 
   await Promise.all(savePromises);
+
+  const taskActionEntries = returnDatas.map(data => ({
+    userId: user._id,
+    taskId: data.task._id,
+    taskType: data.task.type,
+    taskText: data.task.text,
+    direction: data.direction,
+    delta: data.delta,
+    completed: data.task.completed,
+    value: data.task.value,
+    expDelta: data.expDelta,
+    gpDelta: data.gpDelta,
+    hpDelta: data.hpDelta,
+    mpDelta: data.mpDelta,
+    questProgressDelta: data.questProgressDelta,
+    questCollectionDelta: data.questCollectionDelta,
+    questKey: data.questKey,
+    timestamp: new Date(),
+    client: req.headers && req.headers['x-client'],
+  }));
+
+  if (taskActionEntries.length > 0) {
+    try {
+      await TaskActionHistory.insertMany(taskActionEntries, { ordered: false });
+    } catch (err) {
+      logger.error(err, 'Error writing task action history');
+    }
+  }
 
   return returnDatas.map(data => {
     // Handle challenge and group tasks tasks here because the task must have been saved first

@@ -62,6 +62,14 @@
           >
             {{ $t('achievements') }}
           </div>
+          <div
+            v-if="user && user._id === userLoggedIn._id"
+            class="nav-item"
+            :class="{active: selectedPage === 'history'}"
+            @click="selectPage('history')"
+          >
+            {{ $t('actionHistory') }}
+          </div>
         </div>
       </div>
       <!-- SHOW PROFILE -->
@@ -540,6 +548,11 @@
       </div>
       <!-- STATS -->
       <div>
+        <profileTaskHistory
+          v-show="selectedPage === 'history'"
+          v-if="user && user._id === userLoggedIn._id"
+        />
+
         <profileStats
           v-show="selectedPage === 'stats'"
           v-if="user.preferences"
@@ -984,6 +997,7 @@ import { mapState } from '@/libs/store';
 import MemberDetails from '../memberDetails';
 import markdown from '@/directives/markdown';
 import profileStats from './profileStats';
+import profileTaskHistory from './profileTaskHistory';
 
 import message from '@/assets/svg/message.svg?raw';
 import gift from '@/assets/svg/gift.svg?raw';
@@ -1011,6 +1025,7 @@ export default {
   components: {
     MemberDetails,
     profileStats,
+    profileTaskHistory,
     toggleSwitch,
   },
   mixins: [externalLinks, userCustomStateMixin('userLoggedIn')],
@@ -1128,7 +1143,7 @@ export default {
     this.handleExternalLinks();
     // Check if there's a hash in the URL to determine the starting page
     let pageToSelect = this.startingPage;
-    if (window.location.hash && (window.location.hash === '#stats' || window.location.hash === '#achievements')) {
+    if (window.location.hash && ['#stats', '#achievements', '#history'].includes(window.location.hash)) {
       pageToSelect = window.location.hash.substring(1);
     }
     this.selectPage(pageToSelect);
