@@ -1,10 +1,48 @@
 # Habitica Self-Hosted
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/The-Greggs/habitica?quickstart=1&ref=copilot/add-user-action-history)
+
 Adaptions and infrastructure to facilitate self-hosting of the habit-building program [Habitica](https://habitica.com). It is based on the source code and assets of the [Habitica Repository](https://github.com/HabitRPG/habitica), hence the [LICENSE](https://github.com/HabitRPG/habitica/blob/develop/LICENSE) from there applies here and to the adaptions in this repository as well.
 
 ![Screenshot of the Habitica Web Client](website/client/public/static/presskit/Samples/Website/Market.png)
 
 For each release in the Habitica upstream repository, the self-hosting adaptions are automatically applied by rebasing the `self-host` branch onto the last release commit. The Docker images for server and client are built then and pushed to Docker Hub as [awinterstein/habitica-server](https://hub.docker.com/r/awinterstein/habitica-server) and [awinterstein/habitica-client](https://hub.docker.com/r/awinterstein/habitica-client).
+
+## 🚀 Quick Start Options
+
+### Option 1: GitHub Codespaces (Easiest - No Setup Required!)
+
+Develop and test Habitica directly in your browser with zero installation:
+
+1. Click the **"Open in GitHub Codespaces"** badge above
+2. Wait 2-3 minutes for automatic setup
+3. Run `./codespace-start.sh` in the terminal
+4. Access your instance via the forwarded port
+
+Perfect for testing the **Action History feature** without any local setup!
+
+📖 [Full Codespace Guide](./CODESPACE_GUIDE.md)
+
+### Option 2: Docker Deployment (Production Ready)
+
+Deploy Habitica with Docker for production use:
+
+- **Quick Start**: Follow [QUICK_START.md](./QUICK_START.md) (15 minutes)
+- **Complete Guide**: See [DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)
+- **Docker Commands**: [DOCKER_README.md](./DOCKER_README.md)
+
+### Option 3: Traditional Setup
+
+See the original README sections below for Docker Compose setup.
+
+## ✨ New Feature: Action History
+
+This branch includes a comprehensive **Action History** feature that tracks every task action:
+
+- 📊 Individual action logging (not just daily rollups)
+- 🕐 Chronological view of all habits, dailies, todos, and rewards
+- 📈 Filterable by time period (day, week, month, year)
+- 🎯 New "Action History" tab in user profiles
 
 ## Improvements for Self-Hosting
 

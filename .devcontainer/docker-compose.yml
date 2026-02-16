@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  app:
+    image: mcr.microsoft.com/devcontainers/javascript-node:20
+    volumes:
+      - ../..:/workspaces:cached
+    command: sleep infinity
+    network_mode: service:db
+    environment:
+      - NODE_ENV=development
+      - NODE_DB_URI=mongodb://localhost:27017/habitica-dev
+      - BASE_URL=https://${CODESPACE_NAME}-3000.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}
+      - INVITE_ONLY=false
+      - SESSION_SECRET=codespace-dev-secret-change-in-production
+      - SESSION_SECRET_IV=12345678901234567890123456789012
+      - SESSION_SECRET_KEY=1234567890123456789012345678901234567890123456789012345678901234
+
+  db:
+    image: mongo:7.0
+    restart: unless-stopped
+    command: ["--replSet", "rs", "--bind_ip_all", "--port", "27017"]
+    volumes:
+      - mongodb-data:/data/db
+      - mongodb-config:/data/configdb
+    environment:
+      - MONGO_INITDB_DATABASE=habitica-dev
+
+volumes:
+  mongodb-data:
+  mongodb-config:

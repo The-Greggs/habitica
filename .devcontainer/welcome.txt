@@ -1,0 +1,42 @@
+
+╔════════════════════════════════════════════════════════════════╗
+║                                                                ║
+║   🎮 Welcome to Habitica Development Environment! 🎮          ║
+║                                                                ║
+║   GitHub Codespace with Action History Feature                ║
+║                                                                ║
+╚════════════════════════════════════════════════════════════════╝
+
+🚀 Quick Start:
+
+   1. Start the server:
+      ./codespace-start.sh
+      
+   2. Or use the interactive menu:
+      ./codespace-helper.sh
+
+🌐 Access your instance:
+   https://${CODESPACE_NAME}-3000.${GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}
+   (VS Code will show a notification when port is forwarded)
+
+📚 Documentation:
+   • CODESPACE_GUIDE.md     - Complete guide for Codespaces
+   • QUICK_START.md         - 15-minute Docker deployment
+   • DEPLOYMENT_GUIDE.md    - Full deployment reference
+
+🔧 Helpful Commands:
+   habitica-start           - Start the server
+   habitica-test            - Run tests
+   habitica-build           - Build the client
+   mongo-shell              - Open MongoDB shell
+   
+💡 Tips:
+   • MongoDB is running with replica set enabled
+   • All dependencies are pre-installed
+   • Port 3000 is forwarded for web access
+   • The Action History feature is ready to test!
+
+📖 Learn More: cat CODESPACE_GUIDE.md
+
+════════════════════════════════════════════════════════════════
+
