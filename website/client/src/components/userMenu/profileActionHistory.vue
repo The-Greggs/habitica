@@ -92,7 +92,7 @@
               v-for="action in actions"
               :key="action._id"
             >
-              <td>{{ formatTimestamp(action.timestamp) }}</td>
+              <td>{{ formatTimestamp(action.createdAt) }}</td>
               <td>{{ action.taskText }}</td>
               <td>
                 <span
@@ -143,7 +143,6 @@ import axios from 'axios';
 import moment from 'moment';
 
 export default {
-  props: ['userId'],
   data () {
     return {
       actions: [],

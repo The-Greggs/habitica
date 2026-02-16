@@ -1867,15 +1867,15 @@ api.getUserActionHistory = {
     // Query task actions
     const query = {
       userId: user._id,
-      timestamp: { $gte: startDate },
+      createdAt: { $gte: startDate },
     };
 
     const [actions, total] = await Promise.all([
       TaskAction.find(query)
-        .sort({ timestamp: -1 })
+        .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
-        .select('taskId taskType taskText action timestamp delta')
+        .select('taskId taskType taskText action createdAt delta')
         .lean()
         .exec(),
       TaskAction.countDocuments(query).exec(),

@@ -559,7 +559,6 @@
       <div v-if="isUserProfile">
         <profileActionHistory
           v-show="selectedPage === 'history'"
-          :user-id="user._id"
         />
       </div>
     </div>

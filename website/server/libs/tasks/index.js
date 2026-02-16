@@ -516,7 +516,6 @@ async function scoreTask (user, task, direction, req, res) {
       taskType: task.type,
       taskText: task.text,
       action: actionType,
-      timestamp: new Date(),
       client: req.headers['x-client'],
       delta,
     });

@@ -33,12 +33,6 @@ export const schema = new Schema({
     required: true,
     enum: ['scored_up', 'scored_down', 'purchased'],
   },
-  timestamp: {
-    $type: Date,
-    required: true,
-    default: Date.now,
-    index: true,
-  },
   client: {
     $type: String,
     required: false,
@@ -51,13 +45,12 @@ export const schema = new Schema({
   strict: true,
   minimize: false,
   typeKey: '$type',
+  timestamps: true, // This will add createdAt and updatedAt automatically
 });
 
-schema.plugin(baseModel, {
-  timestamps: true,
-});
+schema.plugin(baseModel);
 
-// Create compound index for efficient queries by user and timestamp
-schema.index({ userId: 1, timestamp: -1 });
+// Create compound index for efficient queries by user and creation time
+schema.index({ userId: 1, createdAt: -1 });
 
 export const model = mongoose.model('TaskAction', schema);
