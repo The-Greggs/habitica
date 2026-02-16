@@ -49,3 +49,11 @@ webpack.webstorm.config
 mongodb-*.tgz
 /mongodb-*
 /.nyc_output
+
+# Docker deployment files
+.env
+/logs/
+/mongodb-action-history/
+*.pem
+*.key
+*.crt

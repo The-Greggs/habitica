@@ -1,0 +1,104 @@
+version: "3"
+
+# Docker Compose configuration for Habitica with Action History Feature
+# This is a new stack configuration that won't interfere with your existing deployment
+
+services:
+  server:
+    image: habitica-server:action-history  # Local image built from this repo
+    # Or use: image: your-dockerhub-username/habitica-server:action-history
+    container_name: habitica-server-action-history
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      # Database Configuration
+      - NODE_DB_URI=mongodb://mongo/habitica-action-history
+      
+      # Server Configuration
+      - BASE_URL=https://habitica.gregg.au
+      - PORT=3000
+      
+      # Security
+      - INVITE_ONLY=true
+      - SESSION_SECRET=${SESSION_SECRET}
+      - SESSION_SECRET_IV=${SESSION_SECRET_IV}
+      - SESSION_SECRET_KEY=${SESSION_SECRET_KEY}
+      
+      # Email Configuration
+      - EMAIL_SERVER_URL=smtp.gmail.com
+      - EMAIL_SERVER_PORT=587
+      - EMAIL_SERVER_AUTH_USER=odgregg@gmail.com
+      - EMAIL_SERVER_AUTH_PASSWORD=${EMAIL_PASSWORD}
+      - ADMIN_EMAIL=odgregg@gmail.com
+      
+      # Optional: Performance tuning
+      - WEB_CONCURRENCY=1
+      - MONGODB_POOL_SIZE=10
+      - MONGODB_SOCKET_TIMEOUT=20000
+      
+      # Optional: Logging
+      - ENABLE_CONSOLE_LOGS_IN_PROD=true
+      - DISABLE_REQUEST_LOGGING=false
+      
+      # Optional: Other settings
+      - CRON_SAFE_MODE=false
+      - CRON_SEMI_SAFE_MODE=false
+      - MAINTENANCE_MODE=false
+      - RATE_LIMITER_ENABLED=false
+      
+    ports:
+      - "3001:3000"  # Exposed on port 3001 to avoid conflict with existing deployment
+    networks:
+      - habitica-action-history
+    volumes:
+      # Optional: Mount logs for easier debugging
+      - ./logs:/var/lib/habitica/logs
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/v3/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  mongo:
+    image: docker.io/mongo:7.0  # Using specific version for stability
+    container_name: habitica-mongo-action-history
+    restart: unless-stopped
+    hostname: mongo
+    command: ["--replSet", "rs", "--bind_ip_all", "--port", "27017"]
+    healthcheck:
+      test: echo "try { rs.status() } catch (err) { rs.initiate() }" | mongosh --port 27017 --quiet
+      interval: 10s
+      timeout: 30s
+      start_period: 0s
+      start_interval: 1s
+      retries: 30
+    volumes:
+      # Store MongoDB data in a new directory to avoid conflict
+      - ./mongodb-action-history/db:/data/db:rw
+      - ./mongodb-action-history/dbconf:/data/configdb
+    networks:
+      habitica-action-history:
+        aliases:
+          - mongo
+    # Optional: Set resource limits
+    # deploy:
+    #   resources:
+    #     limits:
+    #       memory: 2G
+    #     reservations:
+    #       memory: 512M
+
+networks:
+  habitica-action-history:
+    driver: bridge
+    name: habitica-action-history
+
+# Optional: Add volume definitions for better management
+# volumes:
+#   mongodb-data:
+#     driver: local
+#   logs:
+#     driver: local
