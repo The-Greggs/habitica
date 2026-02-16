@@ -1840,7 +1840,7 @@ api.statSync = {
  *         "taskType": "habit",
  *         "taskText": "Exercise",
  *         "action": "scored_up",
- *         "timestamp": "2026-02-16T10:30:00.000Z",
+ *         "createdAt": "2026-02-16T10:30:00.000Z",
  *         "delta": 5.2
  *       }
  *     ],
