@@ -26,6 +26,7 @@ import {
 import * as inboxLib from '../../libs/inbox';
 import * as userLib from '../../libs/user';
 import { model as UserHistory } from '../../models/userHistory';
+import { model as TaskAction } from '../../models/taskAction';
 
 const OFFICIAL_PLATFORMS = ['habitica-web', 'habitica-ios', 'habitica-android'];
 const TECH_ASSISTANCE_EMAIL = nconf.get('EMAILS_TECH_ASSISTANCE_EMAIL');
@@ -1809,6 +1810,80 @@ api.statSync = {
     await user.save();
 
     res.respond(200, user);
+  },
+};
+
+/**
+ * @api {get} /api/v3/user/action-history Get user's task action history
+ * @apiName GetUserActionHistory
+ * @apiGroup User
+ *
+ * @apiDescription Retrieves a log of all task actions (habits clicked, dailies completed,
+ * todos checked, rewards purchased) performed by the authenticated user.
+ *
+ * @apiParam (Query) {Number} [days=1] Number of days of history to retrieve (default: 1)
+ * @apiParam (Query) {Number} [limit=100] Maximum number of actions to return (default: 100, max: 1000)
+ * @apiParam (Query) {Number} [skip=0] Number of actions to skip (for pagination)
+ *
+ * @apiSuccess {Object} data The action history
+ * @apiSuccess {Array} data.actions Array of action objects
+ * @apiSuccess {Number} data.total Total number of actions matching the query
+ *
+ * @apiSuccessExample {json} Example return:
+ * {
+ *   "success": true,
+ *   "data": {
+ *     "actions": [
+ *       {
+ *         "taskId": "abc123",
+ *         "taskType": "habit",
+ *         "taskText": "Exercise",
+ *         "action": "scored_up",
+ *         "timestamp": "2026-02-16T10:30:00.000Z",
+ *         "delta": 5.2
+ *       }
+ *     ],
+ *     "total": 42
+ *   }
+ * }
+ */
+api.getUserActionHistory = {
+  method: 'GET',
+  middlewares: [authWithHeaders()],
+  url: '/user/action-history',
+  async handler (req, res) {
+    const { user } = res.locals;
+    
+    // Parse query parameters
+    const days = Math.min(Math.max(parseInt(req.query.days, 10) || 1, 1), 365);
+    const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 100, 1), 1000);
+    const skip = Math.max(parseInt(req.query.skip, 10) || 0, 0);
+    
+    // Calculate start date
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+    
+    // Query task actions
+    const query = {
+      userId: user._id,
+      timestamp: { $gte: startDate },
+    };
+    
+    const [actions, total] = await Promise.all([
+      TaskAction.find(query)
+        .sort({ timestamp: -1 })
+        .skip(skip)
+        .limit(limit)
+        .select('taskId taskType taskText action timestamp delta')
+        .lean()
+        .exec(),
+      TaskAction.countDocuments(query).exec(),
+    ]);
+    
+    res.respond(200, {
+      actions,
+      total,
+    });
   },
 };
 

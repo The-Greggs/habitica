@@ -26,6 +26,7 @@ import {
 } from '../groupTasks';
 import shared from '../../../common';
 import { taskScoredWebhook } from '../webhook';
+import { model as TaskAction } from '../../models/taskAction';
 
 import logger from '../logger';
 
@@ -505,6 +506,24 @@ async function scoreTask (user, task, direction, req, res) {
     delta,
     user,
   });
+
+  // Log the task action
+  try {
+    const actionType = task.type === 'reward' ? 'purchased' : `scored_${direction}`;
+    await TaskAction.create({
+      userId: user._id,
+      taskId: task._id,
+      taskType: task.type,
+      taskText: task.text,
+      action: actionType,
+      timestamp: new Date(),
+      client: req.headers['x-client'],
+      delta,
+    });
+  } catch (err) {
+    // Log but don't fail the request if action logging fails
+    logger.error(err, 'Error logging task action');
+  }
 
   if (group) {
     let role;
